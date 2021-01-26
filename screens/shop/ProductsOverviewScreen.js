@@ -7,13 +7,13 @@ const ProductsOverviewScreen = props => {
 
     const availableProducts = useSelector(state => state.products.availableProducts)
 
-    const renderProductItem = prodItem => {
+    const renderProductItem = itemData => {
 
         return (
             <ProductItem
-                title={prodItem.item.title}
-                price={prodItem.item.price}
-                image={prodItem.item.imageUrl}
+                image={itemData.item.imageUrl}
+                title={itemData.item.title}
+                price={itemData.item.price}
                 onSelect={() => {}}
             />
         )
@@ -22,8 +22,8 @@ const ProductsOverviewScreen = props => {
     return (
         <FlatList
             data={availableProducts}
+            keyExtractor={item => item.id}
             renderItem={renderProductItem}
-            keyExtractor={(item, index) => item.id}
             numColumns={2}
         />
     )
