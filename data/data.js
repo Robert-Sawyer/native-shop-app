@@ -4,7 +4,7 @@ const PRODUCTS = [
   new Product(
     'p1',
     'u1',
-    'Czerwona koszula',
+    'Czerwona koszulka',
     'https://cdn.pixabay.com/photo/2016/10/02/22/17/red-t-shirt-1710578_1280.jpg',
     'Koszula w kolorze czerwonym wykonana z bawełny.',
     29.99
@@ -37,7 +37,7 @@ const PRODUCTS = [
     'p5',
     'u3',
     'PowerBook',
-    'https://get.pxhere.com/photo/laptop-computer-macbook-mac-screen-water-board-keyboard-technology-air-mouse-photo-airport-aircraft-tablet-aviation-office-black-monitor-keys-graphic-hardware-image-pc-exhibition-multimedia-calculator-vector-water-cooling-floppy-disk-phased-out-desktop-computer-netbook-personal-computer-computer-monitor-electronic-device-computer-hardware-display-device-448748.jpg',
+    'https://c.pxhere.com/photos/c4/a9/computer_pc_mac_macbook_laptop_hardware_calculator_water_cooling-448748.jpg!d',
     'Awesome hardware, crappy keyboard and a hefty price. Buy now before a new one is released!',
     2299.99
   ),
