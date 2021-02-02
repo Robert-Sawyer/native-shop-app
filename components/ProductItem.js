@@ -21,8 +21,10 @@ const ProductItem = props => {
     return (
         <View style={styles.prodItem}>
             <TouchableComp onPress={props.onSelect}>
-                <View>
-                    <Image style={styles.image} source={{uri: props.image}}/>
+                <View style={styles.insideContainer}>
+                    <View style={styles.imgContainer}>
+                        <Image style={styles.image} source={{uri: props.image}}/>
+                    </View>
                     <View style={styles.details}>
                         <Text numberOfLines={1} style={styles.title}>{props.title}</Text>
                         <View style={styles.priceContainer}>
@@ -50,21 +52,32 @@ const styles = StyleSheet.create({
         margin: 8,
         height: 180,
         width: 150,
+        overflow: 'hidden',
+    },
+    insideContainer: {
+        width: '100%',
+        height: '100%',
+    },
+    imgContainer: {
+        width: '100%',
+        height: '70%',
+        borderTopLeftRadius: 8,
+        borderTopRightRadius: 8,
+        overflow: 'hidden',
     },
     image: {
-        width: 165,
-        height: '70%',
-        borderRadius: 8,
+        width: '100%',
+        height: '100%',
     },
     details: {
         alignItems: 'center',
-
     },
     title: {
-        fontSize: 16,
+        fontSize: 15,
         fontFamily: 'open-sans-bold',
         marginVertical: 3,
         paddingHorizontal: 5,
+        // letterSpacing: 1,
     },
     priceContainer: {
         fontSize: 18,
