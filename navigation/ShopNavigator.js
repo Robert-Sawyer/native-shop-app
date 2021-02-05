@@ -15,6 +15,12 @@ const ShopNavigator = createStackNavigator({
         headerStyle: {
             backgroundColor: Platform.OS === 'android' ? Colors.headerColor : '',
         },
+        headerTitleStyle: {
+          fontFamily: 'open-sans-bold',
+        },
+        headerBackTitleStyle: {
+            fontFamily: 'open-sans',
+        },
         headerTintColor: Platform.OS === 'android' ? '#fff' : Colors.headerColor
     }
 })

@@ -38,11 +38,13 @@ const styles = StyleSheet.create({
     },
     price: {
         fontSize: 20,
+        fontFamily: 'open-sans-bold',
         color: '#888',
         textAlign: 'center',
         marginVertical: 10,
     },
     desc: {
+        fontFamily: 'open-sans',
         fontSize: 14,
         textAlign: 'center',
         marginHorizontal: 20,

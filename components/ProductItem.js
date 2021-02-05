@@ -81,7 +81,8 @@ const styles = StyleSheet.create({
     },
     priceContainer: {
         fontSize: 18,
-        marginVertical: 3
+        marginVertical: 3,
+        fontFamily: 'open-sans',
     },
 })
 
