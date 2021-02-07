@@ -1,4 +1,4 @@
-import {ADD_TO_CART} from "../actions/cart";
+import {ADD_TO_CART, REMOVE_FROM_CART} from "../actions/cart";
 import CartItem from "../../models/cart-item";
 
 const initialState = {
@@ -33,6 +33,30 @@ const cartReducer = (state = initialState, action) => {
                 ...state,
                 items: {...state.items, [addedProduct.id]: newOrUpdatedCartItem},
                 totalAmount: state.totalAmount + productPrice
+            }
+        case REMOVE_FROM_CART:
+            const selectedCartItem = state.items[action.prodId]
+            const currentQuantity = selectedCartItem.quantity
+            let updatedCartItems
+            if (currentQuantity > 1) {
+                const updatedCartItem = new CartItem(
+                    selectedCartItem.quantity - 1,
+                    selectedCartItem.productTitle,
+                    selectedCartItem.productPrice,
+                    selectedCartItem.sum - selectedCartItem.productPrice
+                )
+                //aktualizuję obiekty w koszyku o ten usunięty
+                updatedCartItems = {...state, [action.prodId]: updatedCartItem}
+            } else {
+                //w przypadku gdy mam tylko jedną sztukę produktu w koszyku kopiuję stan i usuwam cały produkt
+                //o określonym id
+                updatedCartItems = { ...state.items }
+                delete updatedCartItems[action.prodId]
+            }
+            return {
+                ...state,
+                items: updatedCartItems,
+                totalAmount: state.totalAmount - selectedCartItem.productPrice
             }
     }
     return state
