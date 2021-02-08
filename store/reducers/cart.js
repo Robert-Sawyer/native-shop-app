@@ -46,7 +46,7 @@ const cartReducer = (state = initialState, action) => {
                     selectedCartItem.sum - selectedCartItem.productPrice
                 )
                 //aktualizuję obiekty w koszyku o ten usunięty
-                updatedCartItems = {...state, [action.prodId]: updatedCartItem}
+                updatedCartItems = {...state.items, [action.prodId]: updatedCartItem}
             } else {
                 //w przypadku gdy mam tylko jedną sztukę produktu w koszyku kopiuję stan i usuwam cały produkt
                 //o określonym id
@@ -56,9 +56,10 @@ const cartReducer = (state = initialState, action) => {
             return {
                 ...state,
                 items: updatedCartItems,
-                totalAmount: state.totalAmount - selectedCartItem.productPrice
+                totalAmount: Math.abs(state.totalAmount - selectedCartItem.productPrice)
             }
     }
+
     return state
 }
 

@@ -6,11 +6,12 @@ const CartItem = props => {
 
     return (
         <View style={styles.cartItem}>
-            <View style={styles.itemData}>
-                <Text style={styles.titleAndAmount}>{props.title} </Text>
-                <Text style={styles.quantity}>({props.quantity}szt.)</Text>
+            <View style={styles.itemDataTop}>
+                <Text style={styles.titleAndAmount} numberOfLines={2}>{props.title}
+                    <Text style={styles.quantity}>  ({props.quantity}szt.)</Text>
+                </Text>
             </View>
-            <View style={styles.itemData}>
+            <View style={styles.itemDataBottom}>
                 <Text style={styles.titleAndAmount}>{props.amount.toFixed(2)}</Text>
                 <TouchableOpacity onPress={props.onRemove} style={styles.deleteButton}>
                     <Ionicons
@@ -27,15 +28,24 @@ const CartItem = props => {
 const styles = StyleSheet.create({
     cartItem: {
         padding: 10,
-        marginHorizontal: 20,
+        marginHorizontal: 10,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
+        width: '95%',
     },
-    itemData: {
+    itemDataTop: {
         flexDirection: 'row',
         alignItems: 'center',
+        width: '65%',
     },
+    itemDataBottom: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        width: '35%'
+    },
+
     quantity: {
         fontFamily: 'open-sans',
         fontSize: 16,
