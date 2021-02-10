@@ -39,7 +39,7 @@ const ProductsOverviewScreen = props => {
 ProductsOverviewScreen.navigationOptions = navData => {
     return {
         headerTitle: 'Wszystkie produkty',
-        headerLeft: (
+        headerLeft: () =>
             <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
                 <Item
                     title='Menu'
@@ -48,8 +48,7 @@ ProductsOverviewScreen.navigationOptions = navData => {
                         navData.navigation.toggleDrawer()
                     }}
                 />
-            </HeaderButtons>
-        ),
+            </HeaderButtons>,
         headerRight: () =>
             <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
                 <Item
