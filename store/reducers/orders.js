@@ -11,7 +11,7 @@ const ordersReducer = (state = initialState, action) => {
             const newOrder = new Order(
                 new Date().toString(),
                 action.orderData.items,
-                action.orderData.totalAmount,
+                action.orderData.amount,
                 new Date()
             )
             return {
@@ -19,7 +19,6 @@ const ordersReducer = (state = initialState, action) => {
                 orders: state.orders.concat(newOrder)
             }
     }
-
     return state
 }
 

@@ -33,6 +33,11 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         backgroundColor: '#fff',
         width: '95%',
+        // elevation: 9,
+        // shadowColor: '#000',
+        // shadowRadius: 8,
+        // shadowOpacity: 0.26,
+        // shadowOffset: {width: 0, height: 2},
     },
     itemDataTop: {
         flexDirection: 'row',
