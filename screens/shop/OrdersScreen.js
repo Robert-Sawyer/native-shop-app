@@ -18,6 +18,9 @@ const OrdersScreen = props => {
                     <OrderItem
                         amount={itemData.item.totalAmount}
                         date={itemData.item.readableDate}
+                        // dodaję tego propsa bo chcę wyrenderować items dostępne w modelu
+                        // Orderitem
+                        items={itemData.item.items}
                     />
                 )}
             />

@@ -13,13 +13,20 @@ const CartItem = props => {
             </View>
             <View style={styles.itemDataBottom}>
                 <Text style={styles.titleAndAmount}>{props.amount.toFixed(2)}</Text>
-                <TouchableOpacity onPress={props.onRemove} style={styles.deleteButton}>
+                {/*dodaję tego propsa bo nie chcę, żeby ikona kosza do usuwania pojawiała mi się
+                w liście w ekranie z zamówieniami, usuwalnośc productu powinna byc tylko
+                w koszyku. Dlatego tam gdzie renderuję CartItem, czyli w CartScreen ustawię tego
+                propsa a w OrdersScreen nie zrobię tego i wtedy deletable będzie false i nie
+                pokaże się ta ikona*/}
+                {props.deletable && (
+                    <TouchableOpacity onPress={props.onRemove} style={styles.deleteButton}>
                     <Ionicons
                         name={Platform.OS === 'android' ? 'md-trash' : 'ios-trash'}
                         size={23}
                         color='red'
                     />
                 </TouchableOpacity>
+                )}
             </View>
         </View>
     )
