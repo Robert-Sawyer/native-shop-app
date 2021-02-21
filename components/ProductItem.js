@@ -21,17 +21,20 @@ const ProductItem = props => {
     return (
         <View style={styles.prodItem}>
             <TouchableComp onPress={props.onSelect}>
-                <View style={styles.insideContainer}>
-                    <View style={styles.imgContainer}>
-                        <Image style={styles.image} source={{uri: props.image}}/>
-                    </View>
-                    <View style={styles.details}>
-                        <Text numberOfLines={1} style={styles.title}>{props.title}</Text>
-                        <View style={styles.priceContainer}>
-                            <DefaultText>{props.price.toFixed(2)}</DefaultText>
+                    <View style={styles.insideContainer}>
+                        <View style={{...styles.imgContainer, ...{height: props.imgHeight}}}>
+                            <Image style={styles.image} source={{uri: props.image}}/>
+                        </View>
+                        <View style={{...styles.details, ...{height: props.detailsHeight}}}>
+                            <Text numberOfLines={1} style={styles.title}>{props.title}</Text>
+                            <View style={styles.priceContainer}>
+                                <DefaultText>{props.price.toFixed(2)}</DefaultText>
+                            </View>
+                        </View>
+                        <View style={{...styles.action, ...{height: props.actionHeight}}}>
+                            {props.children}
                         </View>
                     </View>
-                </View>
             </TouchableComp>
         </View>
     )
@@ -40,7 +43,6 @@ const ProductItem = props => {
 const styles = StyleSheet.create({
     prodItem: {
         flex: 1,
-        // justifyContent: 'center',
         alignItems: 'center',
         elevation: 9,
         shadowColor: '#000',
@@ -50,9 +52,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#eae9e9',
         borderRadius: 9,
         margin: 8,
-        height: 180,
+        height: 230,
         width: 150,
         overflow: 'hidden',
+    },
+    wrapper: {
+        width: '100%',
+        height: '100%',
     },
     insideContainer: {
         width: '100%',
@@ -60,7 +66,6 @@ const styles = StyleSheet.create({
     },
     imgContainer: {
         width: '100%',
-        height: '70%',
         borderTopLeftRadius: 8,
         borderTopRightRadius: 8,
         overflow: 'hidden',
@@ -70,6 +75,7 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     details: {
+        height: '25%',
         alignItems: 'center',
     },
     title: {
@@ -83,6 +89,12 @@ const styles = StyleSheet.create({
         fontSize: 18,
         marginVertical: 3,
         fontFamily: 'open-sans',
+    },
+    action: {
+        marginVertical: 5,
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
     },
 })
 

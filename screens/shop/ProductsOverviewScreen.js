@@ -16,6 +16,9 @@ const ProductsOverviewScreen = props => {
                 image={itemData.item.imageUrl}
                 title={itemData.item.title}
                 price={itemData.item.price}
+                imgHeight={'75%'}
+                detailsHeight={'25%'}
+                actionHeight={0}
                 onSelect={() => {
                     props.navigation.navigate('ProductDetails', {
                         productId: itemData.item.id,
