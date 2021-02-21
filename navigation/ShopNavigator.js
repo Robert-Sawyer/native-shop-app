@@ -9,6 +9,7 @@ import CartScreen from "../screens/shop/CartScreen";
 import Colors from "../constants/Colors";
 import OrdersScreen from "../screens/shop/OrdersScreen";
 import {Ionicons} from "@expo/vector-icons";
+import UserProductsScreen from "../screens/user/UserProductsScreen";
 
 const defaultNavOption = {
     headerStyle: {
@@ -54,9 +55,40 @@ const OrderNavigator = createStackNavigator({
     defaultNavigationOptions: defaultNavOption
 })
 
+const AdminNavigator = createStackNavigator({
+    UserProducts: UserProductsScreen
+}, {
+    navigationOptions: {
+        drawerIcon: drawerConfig => (
+            <Ionicons
+                name={Platform.OS === 'android' ? 'md-create' : 'ios-create'}
+                size={23}
+                color={drawerConfig.tintColor}
+            />
+        )
+    },
+    defaultNavigationOptions: defaultNavOption
+})
+
 const ShopNavigator = createDrawerNavigator({
-    Products: ProductNavigator,
-    Orders: OrderNavigator
+    Products: {
+        screen: ProductNavigator,
+        navigationOptions: {
+            title: 'Produkty'
+        }
+    },
+    Orders: {
+        screen: OrderNavigator,
+        navigationOptions: {
+            title: 'Zamówienia'
+        }
+    },
+    Admin: {
+        screen: AdminNavigator,
+        navigationOptions: {
+            title: 'Panel admina'
+        }
+    }
 }, {
     contentOptions: {
         activeTintColor: Colors.headerColor
