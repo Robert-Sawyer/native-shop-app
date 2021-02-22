@@ -13,6 +13,10 @@ const UserProductsScreen = props => {
 
     const dispatch = useDispatch()
 
+    const handleEditProduct = (id) => {
+        props.navigation.navigate('EditProducts', {productId: id})
+    }
+
     return (
         <FlatList
             data={userProducts}
@@ -26,16 +30,15 @@ const UserProductsScreen = props => {
                     detailsHeight={'17%'}
                     actionHeight={'20%'}
                     onSelect={() => {
-                        props.navigation.navigate('ProductDetails', {
-                            productId: itemData.item.id,
-                            productTitle: itemData.item.title,
-                        })
+                        handleEditProduct(itemData.item.id)
                     }}
                 >
                     <View style={styles.container}>
 
                         <View style={styles.button}>
-                            <Button title='Edytuj' color={Colors.headerColor} onPress={() => {}}/>
+                            <Button title='Edytuj' color={Colors.headerColor} onPress={() => {
+                                handleEditProduct(itemData.item.id)
+                            }}/>
                         </View>
 
                         <View style={styles.button}>
