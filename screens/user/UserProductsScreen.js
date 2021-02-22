@@ -1,5 +1,5 @@
 import React from 'react'
-import {Button, FlatList, Platform} from 'react-native'
+import {Button, FlatList, View, Platform, StyleSheet} from 'react-native'
 import {useSelector} from "react-redux";
 import ProductItem from "../../components/ProductItem";
 import {HeaderButtons, Item} from "react-navigation-header-buttons";
@@ -19,8 +19,8 @@ const UserProductsScreen = props => {
                     image={itemData.item.imageUrl}
                     price={itemData.item.price}
                     imgHeight={'59%'}
-                    detailsHeight={'18%'}
-                    actionHeight={'23%'}
+                    detailsHeight={'17%'}
+                    actionHeight={'20%'}
                     onSelect={() => {
                         props.navigation.navigate('ProductDetails', {
                             productId: itemData.item.id,
@@ -28,15 +28,36 @@ const UserProductsScreen = props => {
                         })
                     }}
                 >
-                    <Button title='Edytuj' color={Colors.headerColor} onPress={() => {
-                    }}/>
-                    <Button title='Usuń' color={Colors.headerColor} onPress={() => {
-                    }}/>
+                    <View style={styles.container}>
+
+                        <View style={styles.button}>
+                            <Button title='Edytuj' color={Colors.headerColor} onPress={() => {}}/>
+                        </View>
+
+                        <View style={styles.button}>
+                            <Button title='Usuń' color={Colors.headerColor} onPress={() => {}}/>
+                        </View>
+
+                    </View>
                 </ProductItem>}
             numColumns={2}
         />
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+    },
+    button: {
+        borderRadius: 5,
+        overflow: 'hidden',
+        width: '39%'
+    },
+})
 
 UserProductsScreen.navigationOptions = navData => {
     return {

@@ -21,20 +21,20 @@ const ProductItem = props => {
     return (
         <View style={styles.prodItem}>
             <TouchableComp onPress={props.onSelect}>
-                    <View style={styles.insideContainer}>
-                        <View style={{...styles.imgContainer, ...{height: props.imgHeight}}}>
-                            <Image style={styles.image} source={{uri: props.image}}/>
-                        </View>
-                        <View style={{...styles.details, ...{height: props.detailsHeight}}}>
-                            <Text numberOfLines={1} style={styles.title}>{props.title}</Text>
-                            <View style={styles.priceContainer}>
-                                <DefaultText>{props.price.toFixed(2)}</DefaultText>
-                            </View>
-                        </View>
-                        <View style={{...styles.action, ...{height: props.actionHeight}}}>
-                            {props.children}
+                <View style={styles.insideContainer}>
+                    <View style={{...styles.imgContainer, ...{height: props.imgHeight}}}>
+                        <Image style={styles.image} source={{uri: props.image}}/>
+                    </View>
+                    <View style={{...styles.details, ...{height: props.detailsHeight}}}>
+                        <Text numberOfLines={1} style={styles.title}>{props.title}</Text>
+                        <View style={styles.priceContainer}>
+                            <DefaultText>{props.price.toFixed(2)} zł</DefaultText>
                         </View>
                     </View>
+                    <View style={{...styles.action, ...{height: props.actionHeight}}}>
+                        {props.children}
+                    </View>
+                </View>
             </TouchableComp>
         </View>
     )
@@ -56,10 +56,6 @@ const styles = StyleSheet.create({
         width: 150,
         overflow: 'hidden',
     },
-    wrapper: {
-        width: '100%',
-        height: '100%',
-    },
     insideContainer: {
         width: '100%',
         height: '100%',
@@ -75,7 +71,6 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     details: {
-        height: '25%',
         alignItems: 'center',
     },
     title: {
@@ -91,7 +86,7 @@ const styles = StyleSheet.create({
         fontFamily: 'open-sans',
     },
     action: {
-        marginVertical: 5,
+        marginVertical: 7,
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
