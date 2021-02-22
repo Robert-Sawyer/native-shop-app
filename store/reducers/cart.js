@@ -1,6 +1,7 @@
 import {ADD_TO_CART, REMOVE_FROM_CART} from "../actions/cart";
 import CartItem from "../../models/cart-item";
 import {ADD_ORDER} from "../actions/orders";
+import {DELETE_PRODUCT} from "../actions/products";
 
 const initialState = {
     items: {},
@@ -61,6 +62,23 @@ const cartReducer = (state = initialState, action) => {
             }
         case ADD_ORDER:
             return initialState
+        case DELETE_PRODUCT:
+            //sprawdzam, czy usuwany produkt jest w ogóle w koszyku, jesli nie, to zwracam state i nie robie nic
+            if (!state.items[action.prodId]) {
+                return state
+            }
+            //kopiuję produkty...
+            const updatedItems = {...state.items}
+            //pobieram kwotę usuwanego produktu...
+            const itemAmount = state.items[action.prodId].sum
+            //i usuwam produkt z listy...
+            delete updatedItems[action.prodId]
+            return {
+                ...state,
+                items: updatedItems,
+                //odejmuję od całkowitej kwoty wartośc usuniętego produktu
+                totalAmount: state.totalAmount - itemAmount
+            }
     }
 
     return state
