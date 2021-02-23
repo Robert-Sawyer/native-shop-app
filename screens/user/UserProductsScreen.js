@@ -81,6 +81,16 @@ UserProductsScreen.navigationOptions = navData => {
                     }}
                 />
             </HeaderButtons>,
+        headerRight: () =>
+            <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+                <Item
+                    title='Menu'
+                    iconName={Platform.OS === 'android' ? 'add-sharp' : 'ios-add-sharp'}
+                    onPress={() => {
+                        navData.navigation.navigate('EditProducts')
+                    }}
+                />
+            </HeaderButtons>,
     }
 }
 
