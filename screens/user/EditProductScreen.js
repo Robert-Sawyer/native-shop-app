@@ -48,8 +48,10 @@ const styles = StyleSheet.create({
 })
 
 
-EditProductScreen.navigationOptions = {
-    headerTitle: 'Edycja produktu'
+EditProductScreen.navigationOptions = navData => {
+    return {
+        headerTitle: navData.navigation.getParam('productId') ? 'Edycja produktu' : 'Dodaj produkt'
+    }
 }
 
 export default EditProductScreen
