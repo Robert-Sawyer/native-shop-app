@@ -1,5 +1,5 @@
 import React from 'react'
-import {Button, FlatList, View, Platform, StyleSheet} from 'react-native'
+import {Button, FlatList, View, Platform, StyleSheet, Alert} from 'react-native'
 import {useSelector, useDispatch} from "react-redux";
 import ProductItem from "../../components/ProductItem";
 import {HeaderButtons, Item} from "react-navigation-header-buttons";
@@ -15,6 +15,22 @@ const UserProductsScreen = props => {
 
     const handleEditProduct = (id) => {
         props.navigation.navigate('EditProducts', {productId: id})
+    }
+
+    //funkcja potrzebuje id usuwanego produktu więc użyję bind() w JSX na dole
+    const handleDeleteProduct = (id) => {
+        Alert.alert('Potwierdzenie', 'Czy na pewno chcesz usunąć produkt?', [
+            {
+                text: 'Nie', style: 'default'
+            },
+            {
+                text: 'Tak',
+                style: 'destructive',
+                onPress: () => {
+                    dispatch(productActions.deleteProduct(id))
+                }
+            }
+        ])
     }
 
     return (
@@ -42,9 +58,11 @@ const UserProductsScreen = props => {
                         </View>
 
                         <View style={styles.button}>
-                            <Button title='Usuń' color={Colors.headerColor} onPress={() => {
-                                dispatch(productActions.deleteProduct(itemData.item.id))
-                            }}/>
+                            <Button
+                                title='Usuń'
+                                color={Colors.headerColor}
+                                //przekazuję id do handlera za pomocą bind
+                                onPress={handleDeleteProduct.bind(this, itemData.item.id)}/>
                         </View>
 
                     </View>

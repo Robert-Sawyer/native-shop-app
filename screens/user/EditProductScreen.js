@@ -28,6 +28,7 @@ const EditProductScreen = props => {
         else {
             dispatch(productActions.createProduct(title, image, +price, description))
         }
+        props.navigation.goBack()
         //musze zdefiniować zależności, żeby funkcja wywoływała się gdy ulegnie zmianie cokolwiek, co jest
         //edytowalne, czyli wszystko. gdyby to była pusta tablica nic by się nie tworzyło, bo usecallback nie
         //zwracałby uwagi na żadne wprowadzone przez usera dane przy tworzeniu i edycji produktu
