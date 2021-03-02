@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
         shadowRadius: 8,
         shadowOpacity: 0.26,
         shadowOffset: {width: 0, height: 2},
-        elevation: 5,
+        elevation: 9,
         borderRadius: 10,
         backgroundColor: '#fff',
         alignItems: 'center',

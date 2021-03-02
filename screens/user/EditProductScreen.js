@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback} from 'react'
-import {ScrollView, View, TextInput, Text, StyleSheet, Platform} from 'react-native'
+import {ScrollView, View, TextInput, Text, StyleSheet, Platform, Alert} from 'react-native'
 import {HeaderButtons, Item} from "react-navigation-header-buttons";
 import CustomHeaderButton from "../../components/UI/HeaderButton";
 import {useSelector, useDispatch} from "react-redux";
@@ -14,6 +14,7 @@ const EditProductScreen = props => {
 
     //jeśli produkt istnieje to wstaw w inputa treść do edycji jeśli nie ma produktu to input jest pusty
     const [title, setTitle] = useState(editedProduct ? editedProduct.title : '')
+    const [isTitleValid, setIsTitleValid] = useState(false)
     const [image, setImage] = useState(editedProduct ? editedProduct.imageUrl : '')
     const [price, setPrice] = useState(editedProduct ? editedProduct.price.toString() : '')
     const [description, setDescription] = useState(editedProduct ? editedProduct.description : '')
@@ -21,6 +22,12 @@ const EditProductScreen = props => {
     const dispatch = useDispatch()
     //usecallback zapewni, że ta funkcja nie jest odtwarzana za każdym razem, gdy komponent jest renderowany
     const handleSubmit = useCallback(() => {
+        if (!isTitleValid) {
+            Alert.alert('Błąd', 'Nie możesz dodać produktu bez tytułu', [
+                {text: 'Ok'}
+            ])
+            return;
+        }
         if (editedProduct) {
             //dodaję + przed price bo price jest typu number a do inputa wprowadzam stringa
             dispatch(productActions.updateProduct(prodId, title, image, +price, description))
@@ -39,12 +46,27 @@ const EditProductScreen = props => {
         props.navigation.setParams({submit: handleSubmit})
     }, [handleSubmit])
 
+    const handleTitleChange = (text) => {
+        if (text.trim().length === 0) {
+            setIsTitleValid(false)
+        } else {
+            setIsTitleValid(true)
+        }
+        setTitle(text)
+    }
+
     return (
         <ScrollView>
             <View style={styles.form}>
                 <View style={styles.formControl}>
                     <Text style={styles.label}>Tytuł</Text>
-                    <TextInput style={styles.input} value={title} onChangeText={text => setTitle(text)}/>
+                    <TextInput
+                        style={styles.input}
+                        value={title}
+                        onChangeText={text => setTitle(text)}
+                        returnKeyType='next'
+                    />
+                    {!isTitleValid && <Text>Niepoprawny tytuł</Text>}
                 </View>
                 <View style={styles.formControl}>
                     <Text style={styles.label}>Zdjęcie</Text>
@@ -52,7 +74,12 @@ const EditProductScreen = props => {
                 </View>
                 <View style={styles.formControl}>
                     <Text style={styles.label}>Cena</Text>
-                    <TextInput style={styles.input} value={price} onChangeText={text => setPrice(text)}/>
+                    <TextInput
+                        style={styles.input}
+                        value={price}
+                        onChangeText={text => setPrice(text)}
+                        keyboardType='decimal-pad'
+                    />
                 </View>
                 <View style={styles.formControl}>
                     <Text style={styles.label}>Opis</Text>
