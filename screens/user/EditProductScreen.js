@@ -1,7 +1,8 @@
-import React, {useState, useEffect, useCallback, useReducer} from 'react'
-import {ScrollView, View, TextInput, Text, StyleSheet, Platform, Alert} from 'react-native'
+import React, {useEffect, useCallback, useReducer} from 'react'
+import {ScrollView, View, StyleSheet, Platform, Alert} from 'react-native'
 import {HeaderButtons, Item} from "react-navigation-header-buttons";
 import CustomHeaderButton from "../../components/UI/HeaderButton";
+import Input from '../../components/UI/Input'
 import {useSelector, useDispatch} from "react-redux";
 import * as productActions from '../../store/actions/products'
 
@@ -41,7 +42,7 @@ const EditProductScreen = props => {
     const prodId = props.navigation.getParam('productId')
     const editedProduct = useSelector(state =>
         state.products.userProducts.find(prod => prod.id === prodId))
-    
+
     const dispatch = useDispatch()
 
     //tworzę sobie całkowicie niezależny od reduxa mechanizm zarządzania stanem komponentu w celu sprawnej
@@ -102,57 +103,77 @@ const EditProductScreen = props => {
     }, [handleSubmit])
 
     //inputId będzie po prostu string z nazwą inputa - powinny być takie jak pola w usereducer
-    const handleTextChange = (inputId, text) => {
-        let isValid = false
-        if (text.trim().length > 0) {
-            isValid = true
-        }
+    //opakowuję w usecallback żeby funkcja nie wywoływała się niepotrzebnie tylko po interakcji z inputem
+    const handleInputChange = useCallback((inputId, inputValue, inputValidity) => {
         dispatchFormState({
             type: FORM_INPUT_UPDATE,
-            value: text,
-            isValid: isValid,
-            input: 'title' //string musi być taki jak klucz wewnątrz initialState w usereducer
+            value: inputValue,
+            isValid: inputValidity,
+            input: inputId
         })
-    }
+        //handleInputChange a więc props w inpucie onInputChange nigdy się niepotrzebnie nie odpali jeśli dispatch nie
+        //ulgenie zmianie
+    }, [dispatchFormState])
 
     return (
         <ScrollView>
             <View style={styles.form}>
-                <View style={styles.formControl}>
-                    <Text style={styles.label}>Tytuł</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={formState.inputValues.title}
-                        onChangeText={handleTextChange.bind(this, 'title')}
-                        returnKeyType='next'
-                    />
-                    {/*{!formState.inputValidities.title && <Text>Niepoprawny tytuł</Text>}*/}
-                </View>
-                <View style={styles.formControl}>
-                    <Text style={styles.label}>Zdjęcie</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={formState.inputValues.image}
-                        onChangeText={handleTextChange.bind(this, 'image')}
-                    />
-                </View>
-                <View style={styles.formControl}>
-                    <Text style={styles.label}>Cena</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={formState.inputValues.price}
-                        onChangeText={handleTextChange.bind(this, 'price')}
-                        keyboardType='decimal-pad'
-                    />
-                </View>
-                <View style={styles.formControl}>
-                    <Text style={styles.label}>Opis</Text>
-                    <TextInput
-                        style={styles.input}
-                        value={formState.inputValues.description}
-                        onChangeText={handleTextChange.bind(this, 'description')}
-                    />
-                </View>
+                <Input
+                    id='title'
+                    label='Tytuł'
+                    errorText='Niepoprawny tytuł'
+                    //muszę zrezygnować z bind ponieważ w takim przypadku w momencie wypełniania formularza tworzy się
+                    //zbut wiele callbacków - praktycznie nieskoczona pętla i nie da się przejśc z jednego inputa
+                    //na drugi, dlatego zamiast tego dodaję prop id i przekazuję go w Input do funkcji w useeffect
+                    onInputChange={handleInputChange}
+                    returnKeyType='next'
+                    keyboardType='default'
+                    autoCorrect
+                    autoCapitalize='sentences'
+                    //jeśli edytuję produkt to do inputa wstawiam initialValue odpowiadającą tytułowi a jeśli tworzę
+                    //nowy to wtedy pole ma byc puste, podobnie z walidacją - patrz form state
+                    initialValue={editedProduct ? editedProduct.title : ''}
+                    initiallyValid={!!editedProduct}
+                    required
+                />
+                <Input
+                    id='image'
+                    label='Zdjęcie'
+                    errorText='Nie dodałeś zdjęcia'
+                    onInputChange={handleInputChange}
+                    returnKeyType='next'
+                    autoCapitalize='sentences'
+                    initialValue={editedProduct ? editedProduct.imageUrl : ''}
+                    initiallyValid={!!editedProduct}
+                    required
+                />
+                <Input
+                    id='price'
+                    label='Cena'
+                    errorText='Nie podałeś ceny'
+                    onInputChange={handleInputChange}
+                    returnKeyType='next'
+                    keyboardType='decimal-pad'
+                    initialValue={editedProduct ? editedProduct.price.toString() : ''}
+                    initiallyValid={!!editedProduct}
+                    required
+                    min={0.01}
+                />
+                <Input
+                    id='description'
+                    label='Opis'
+                    errorText='Nie możesz dodać produktu bez opisu'
+                    onInputChange={handleInputChange}
+                    keyboardType='default'
+                    autoCorrect
+                    autoCapitalize='sentences'
+                    multiline
+                    numberOfLines={5}
+                    initialValue={editedProduct ? editedProduct.description : ''}
+                    initiallyValid={!!editedProduct}
+                    required
+                    minLength={5}
+                />
             </View>
         </ScrollView>
     )
@@ -162,19 +183,6 @@ const EditProductScreen = props => {
 const styles = StyleSheet.create({
     form: {
         margin: 20,
-    },
-    formControl: {
-        width: '100%',
-    },
-    label: {
-        fontFamily: 'open-sans-bold',
-        marginVertical: 8,
-    },
-    input: {
-        paddingHorizontal: 2,
-        paddingVertical: 5,
-        borderBottomColor: '#ccc',
-        borderBottomWidth: 1,
     },
 })
 
