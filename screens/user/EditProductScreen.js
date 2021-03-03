@@ -1,5 +1,5 @@
 import React, {useEffect, useCallback, useReducer} from 'react'
-import {ScrollView, View, StyleSheet, Platform, Alert} from 'react-native'
+import {ScrollView, View, StyleSheet, Platform, Alert, KeyboardAvoidingView} from 'react-native'
 import {HeaderButtons, Item} from "react-navigation-header-buttons";
 import CustomHeaderButton from "../../components/UI/HeaderButton";
 import Input from '../../components/UI/Input'
@@ -116,68 +116,77 @@ const EditProductScreen = props => {
     }, [dispatchFormState])
 
     return (
-        <ScrollView>
-            <View style={styles.form}>
-                <Input
-                    id='title'
-                    label='Tytuł'
-                    errorText='Niepoprawny tytuł'
-                    //muszę zrezygnować z bind ponieważ w takim przypadku w momencie wypełniania formularza tworzy się
-                    //zbut wiele callbacków - praktycznie nieskoczona pętla i nie da się przejśc z jednego inputa
-                    //na drugi, dlatego zamiast tego dodaję prop id i przekazuję go w Input do funkcji w useeffect
-                    onInputChange={handleInputChange}
-                    returnKeyType='next'
-                    keyboardType='default'
-                    autoCorrect
-                    autoCapitalize='sentences'
-                    //jeśli edytuję produkt to do inputa wstawiam initialValue odpowiadającą tytułowi a jeśli tworzę
-                    //nowy to wtedy pole ma byc puste, podobnie z walidacją - patrz form state
-                    initialValue={editedProduct ? editedProduct.title : ''}
-                    initiallyValid={!!editedProduct}
-                    required
-                />
-                <Input
-                    id='image'
-                    label='Zdjęcie'
-                    errorText='Nie dodałeś zdjęcia'
-                    onInputChange={handleInputChange}
-                    returnKeyType='next'
-                    autoCapitalize='sentences'
-                    initialValue={editedProduct ? editedProduct.imageUrl : ''}
-                    initiallyValid={!!editedProduct}
-                    required
-                />
-                <Input
-                    id='price'
-                    label='Cena'
-                    errorText='Nie podałeś ceny'
-                    onInputChange={handleInputChange}
-                    returnKeyType='next'
-                    keyboardType='decimal-pad'
-                    initialValue={editedProduct ? editedProduct.price.toString() : ''}
-                    initiallyValid={!!editedProduct}
-                    required
-                    min={0.01}
-                />
-                <Input
-                    id='description'
-                    label='Opis'
-                    errorText='Nie możesz dodać produktu bez opisu'
-                    onInputChange={handleInputChange}
-                    keyboardType='default'
-                    autoCorrect
-                    autoCapitalize='sentences'
-                    multiline
-                    numberOfLines={5}
-                    initialValue={editedProduct ? editedProduct.description : ''}
-                    initiallyValid={!!editedProduct}
-                    required
-                    minLength={5}
-                />
-            </View>
-        </ScrollView>
+        //NA NIEKTÓRYCH MAŁYCH EKRANACH TEN FORMULARZ MOŻE BYC PRZYSŁANIANY PRZEZ KLAWIATURĘ, DLATEGO WARTO TO DODAĆ
+        //NA RAZIE ZAKOMENTUJĘ, PONIEWAŻ NA MOIM EKRANIE WYŚWIETLA SIĘ GORZEJ, ALE ZACHOWUJĘ NA PÓŹNIEJ
+        // <KeyboardAvoidingView
+        //     //flex 1 musi być dodane ponieważ owijam tym komponentem scroll view i keyboard musi zarezerwować cały
+        //     //ekran dla siebie
+        //     style={{flex: 1}}
+        //     behavior='padding'
+        //     keyboardVerticalOffset={10}
+        // >
+            <ScrollView>
+                <View style={styles.form}>
+                    <Input
+                        id='title'
+                        label='Tytuł'
+                        errorText='Niepoprawny tytuł'
+                        //muszę zrezygnować z bind ponieważ w takim przypadku w momencie wypełniania formularza tworzy się
+                        //zbut wiele callbacków - praktycznie nieskoczona pętla i nie da się przejśc z jednego inputa
+                        //na drugi, dlatego zamiast tego dodaję prop id i przekazuję go w Input do funkcji w useeffect
+                        onInputChange={handleInputChange}
+                        returnKeyType='next'
+                        keyboardType='default'
+                        autoCorrect
+                        autoCapitalize='sentences'
+                        //jeśli edytuję produkt to do inputa wstawiam initialValue odpowiadającą tytułowi a jeśli tworzę
+                        //nowy to wtedy pole ma byc puste, podobnie z walidacją - patrz form state
+                        initialValue={editedProduct ? editedProduct.title : ''}
+                        initiallyValid={!!editedProduct}
+                        required
+                    />
+                    <Input
+                        id='image'
+                        label='Zdjęcie'
+                        errorText='Nie dodałeś zdjęcia'
+                        onInputChange={handleInputChange}
+                        returnKeyType='next'
+                        autoCapitalize='sentences'
+                        initialValue={editedProduct ? editedProduct.imageUrl : ''}
+                        initiallyValid={!!editedProduct}
+                        required
+                    />
+                    <Input
+                        id='price'
+                        label='Cena'
+                        errorText='Nie podałeś ceny'
+                        onInputChange={handleInputChange}
+                        returnKeyType='next'
+                        keyboardType='decimal-pad'
+                        initialValue={editedProduct ? editedProduct.price.toString() : ''}
+                        initiallyValid={!!editedProduct}
+                        required
+                        min={0.01}
+                    />
+                    <Input
+                        id='description'
+                        label='Opis'
+                        errorText='Nie możesz dodać produktu bez opisu'
+                        onInputChange={handleInputChange}
+                        keyboardType='default'
+                        autoCorrect
+                        autoCapitalize='sentences'
+                        multiline
+                        numberOfLines={5}
+                        initialValue={editedProduct ? editedProduct.description : ''}
+                        initiallyValid={!!editedProduct}
+                        required
+                        minLength={5}
+                    />
+                </View>
+            </ScrollView>
+        // </KeyboardAvoidingView>
     )
-
 }
 
 const styles = StyleSheet.create({

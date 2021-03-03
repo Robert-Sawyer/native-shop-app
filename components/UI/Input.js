@@ -43,6 +43,8 @@ const Input = props => {
         }
     }, [inputState, onInputChange, id])
 
+    //zamiast ręcznej walidacji można skorzystać np z validate.js - zainstalować pakiet i użyć automatyzacji
+    //ciekawy jest róznież FORMIK - fajny pakiet do zarządzenia formularzami w reakcie
     const handleTextChange = text => {
         const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         let isValid = true
@@ -81,7 +83,10 @@ const Input = props => {
                 onChangeText={handleTextChange}
                 onBlur={handleLostFocus}
             />
-            {!inputState.isValid && <Text>{props.errorText}</Text>}
+            {!inputState.isValid && inputState.touched &&
+            <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>{props.errorText}</Text>
+            </View>}
         </View>
     )
 }
@@ -99,6 +104,14 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         borderBottomColor: '#ccc',
         borderBottomWidth: 1,
+    },
+    errorContainer: {
+        marginVertical: 5,
+    },
+    errorText: {
+        color: 'red',
+        fontFamily: 'open-sans',
+        fontSize: 13,
     },
 })
 
