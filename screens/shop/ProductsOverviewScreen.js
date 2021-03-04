@@ -1,16 +1,22 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {FlatList, Platform} from 'react-native'
+import {useDispatch} from "react-redux";
 import {HeaderButtons, Item} from 'react-navigation-header-buttons'
 import {useSelector} from "react-redux";
 import ProductItem from "../../components/ProductItem";
 import CustomHeaderButton from "../../components/UI/HeaderButton";
+import * as productActions from '../../store/actions/products'
 
 const ProductsOverviewScreen = props => {
 
     const availableProducts = useSelector(state => state.products.availableProducts)
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(productActions.fetchProducts())
+    }, [dispatch])
 
     const renderProductItem = itemData => {
-
         return (
             <ProductItem
                 image={itemData.item.imageUrl}

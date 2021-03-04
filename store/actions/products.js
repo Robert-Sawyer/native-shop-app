@@ -1,10 +1,9 @@
+import Product from "../../models/product";
+
 export const DELETE_PRODUCT = 'DELETE_PRODUCT'
 export const CREATE_PRODUCT = 'CREATE_PRODUCT'
 export const UPDATE_PRODUCT = 'UPDATE_PRODUCT'
-
-export const deleteProduct = productId => {
-    return {type: DELETE_PRODUCT, prodId: productId}
-}
+export const SET_PRODUCTS = 'SET_PRODUCTS'
 
 export const createProduct = (title, imageUrl, price, description) => {
     return async dispatch => {
@@ -47,6 +46,30 @@ export const createProduct = (title, imageUrl, price, description) => {
     }
 }
 
+export const fetchProducts = () => {
+    return async dispatch => {
+        //pobieram produkty domyślną metoda get bez headersów i body więc nie potrzebuję configa
+        const response = await fetch('https://native-shop-app-d7b20-default-rtdb.firebaseio.com/products.json')
+
+        const resData = await response.json()
+        const loadedProducts = []
+
+        for (const key in resData) {
+            loadedProducts.push(
+                new Product(
+                    key,
+                    'u1',
+                    resData[key].title,
+                    resData[key].imageUrl,
+                    resData[key].description,
+                    resData[key].price
+                ))
+        }
+
+        dispatch({type: SET_PRODUCTS, products: loadedProducts})
+    }
+}
+
 export const updateProduct = (id, title, imageUrl, price, description) => {
     return {
         type: UPDATE_PRODUCT,
@@ -58,4 +81,8 @@ export const updateProduct = (id, title, imageUrl, price, description) => {
             description
         }
     }
+}
+
+export const deleteProduct = productId => {
+    return {type: DELETE_PRODUCT, prodId: productId}
 }
