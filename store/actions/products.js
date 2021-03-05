@@ -74,7 +74,6 @@ export const fetchProducts = () => {
             dispatch({type: SET_PRODUCTS, products: loadedProducts})
         } catch (e) {
             throw e
-
         }
     }
 }
