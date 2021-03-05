@@ -80,18 +80,32 @@ export const fetchProducts = () => {
 }
 
 export const updateProduct = (id, title, imageUrl, price, description) => {
-    return {
-        type: UPDATE_PRODUCT,
-        prodId: id,
-        productData: {
-            title,
-            imageUrl,
-            price,
-            description
-        }
+    return async dispatch => {
+        await fetch(`https://native-shop-app-d7b20-default-rtdb.firebaseio.com/products/${id}.json`, {
+            method: 'patch',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({title, imageUrl, price, description})
+        })
+        dispatch({
+            type: UPDATE_PRODUCT,
+            prodId: id,
+            productData: {
+                title,
+                imageUrl,
+                price,
+                description
+            }
+        })
     }
 }
 
 export const deleteProduct = productId => {
-    return {type: DELETE_PRODUCT, prodId: productId}
+    return async dispatch => {
+        await fetch(`https://native-shop-app-d7b20-default-rtdb.firebaseio.com/products/${productId}.json`, {
+            method: 'delete',
+        })
+        dispatch({type: DELETE_PRODUCT, prodId: productId})
+    }
 }
