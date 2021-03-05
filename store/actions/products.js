@@ -81,13 +81,16 @@ export const fetchProducts = () => {
 
 export const updateProduct = (id, title, imageUrl, price, description) => {
     return async dispatch => {
-        await fetch(`https://native-shop-app-d7b20-default-rtdb.firebaseio.com/products/${id}.json`, {
+        const response = await fetch(`https://native-shop-app-d7b20-default-rtdb.firebaseio.com/products/${id}.json`, {
             method: 'patch',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({title, imageUrl, price, description})
         })
+        if (!response.ok) {
+            throw new Error('Coś poszło nie tak!')
+        }
         dispatch({
             type: UPDATE_PRODUCT,
             prodId: id,
@@ -103,9 +106,12 @@ export const updateProduct = (id, title, imageUrl, price, description) => {
 
 export const deleteProduct = productId => {
     return async dispatch => {
-        await fetch(`https://native-shop-app-d7b20-default-rtdb.firebaseio.com/products/${productId}.json`, {
+        const response = await fetch(`https://native-shop-app-d7b20-default-rtdb.firebaseio.com/products/${productId}.json`, {
             method: 'delete',
         })
+        if (!response.ok) {
+            throw new Error('Coś poszło nie tak!')
+        }
         dispatch({type: DELETE_PRODUCT, prodId: productId})
     }
 }

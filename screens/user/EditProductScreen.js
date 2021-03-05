@@ -1,10 +1,11 @@
-import React, {useEffect, useCallback, useReducer} from 'react'
-import {ScrollView, View, StyleSheet, Platform, Alert, KeyboardAvoidingView} from 'react-native'
+import React, {useState, useEffect, useCallback, useReducer} from 'react'
+import {ScrollView, View, StyleSheet, Platform, Alert, KeyboardAvoidingView, ActivityIndicator} from 'react-native'
 import {HeaderButtons, Item} from "react-navigation-header-buttons";
 import CustomHeaderButton from "../../components/UI/HeaderButton";
 import Input from '../../components/UI/Input'
 import {useSelector, useDispatch} from "react-redux";
 import * as productActions from '../../store/actions/products'
+import Colors from "../../constants/Colors";
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE'
 
@@ -38,6 +39,9 @@ const formReducer = (state, action) => {
 
 const EditProductScreen = props => {
 
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState()
+
     //pobieram produkty i filtruję je na podstawie parametru
     const prodId = props.navigation.getParam('productId')
     const editedProduct = useSelector(state =>
@@ -66,32 +70,49 @@ const EditProductScreen = props => {
         isFormValid: !!editedProduct
     })
 
+    useEffect(() => {
+        if (error) {
+            //wiadomosć błędu (error jako drugi argument) ustawiam poniżej w setError a stamtąd bierze się ona z
+            //actions/products gdzie rzucam nowy Error jeśli response jest nieprawidłowa
+            Alert.alert('Błąd', error, [{ text: 'OK' }])
+        }
+    }, [error])
+
     //usecallback zapewni, że ta funkcja nie jest odtwarzana za każdym razem, gdy komponent jest renderowany
-    const handleSubmit = useCallback(() => {
+    const handleSubmit = useCallback(async () => {
         if (!formState.isFormValid) {
             Alert.alert('Błąd', 'Sprawdź, czy poprawnie wypełniłeś wszystkie pola', [
                 {text: 'Ok'}
             ])
             return;
         }
-        if (editedProduct) {
-            //dodaję + przed price bo price jest typu number a do inputa wprowadzam stringa
-            dispatch(productActions.updateProduct(
-                prodId,
-                formState.inputValues.title,
-                formState.inputValues.image,
-                +formState.inputValues.price,
-                formState.inputValues.description
-            ))
-        } else {
-            dispatch(productActions.createProduct(
-                formState.inputValues.title,
-                formState.inputValues.image,
-                +formState.inputValues.price,
-                formState.inputValues.description
-            ))
+        //ustawiam łapanie błędów tak jak w product overview screen
+        setError(null)
+        setIsLoading(true)
+        try {
+            if (editedProduct) {
+                //dodaję + przed price bo price jest typu number a do inputa wprowadzam stringa
+                await dispatch(productActions.updateProduct(
+                    prodId,
+                    formState.inputValues.title,
+                    formState.inputValues.image,
+                    +formState.inputValues.price,
+                    formState.inputValues.description
+                ))
+            } else {
+                await dispatch(productActions.createProduct(
+                    formState.inputValues.title,
+                    formState.inputValues.image,
+                    +formState.inputValues.price,
+                    formState.inputValues.description
+                ))
+            }
+            props.navigation.goBack()
+
+        } catch (e) {
+            setError(e.message)
         }
-        props.navigation.goBack()
+        setIsLoading(false)
         //musze zdefiniować zależności, żeby funkcja wywoływała się gdy ulegnie zmianie cokolwiek, co jest
         //edytowalne, czyli wszystko. gdyby to była pusta tablica nic by się nie tworzyło, bo usecallback nie
         //zwracałby uwagi na żadne wprowadzone przez usera dane przy tworzeniu i edycji produktu
@@ -115,6 +136,14 @@ const EditProductScreen = props => {
         //ulgenie zmianie
     }, [dispatchFormState])
 
+    if (isLoading) {
+        return (
+            <View style={styles.centered}>
+                <ActivityIndicator size='large' color={Colors.headerColor}/>
+            </View>
+        )
+    }
+
     return (
         //NA NIEKTÓRYCH MAŁYCH EKRANACH TEN FORMULARZ MOŻE BYC PRZYSŁANIANY PRZEZ KLAWIATURĘ, DLATEGO WARTO TO DODAĆ
         //NA RAZIE ZAKOMENTUJĘ, PONIEWAŻ NA MOIM EKRANIE WYŚWIETLA SIĘ GORZEJ, ALE ZACHOWUJĘ NA PÓŹNIEJ
@@ -125,66 +154,66 @@ const EditProductScreen = props => {
         //     behavior='padding'
         //     keyboardVerticalOffset={10}
         // >
-            <ScrollView>
-                <View style={styles.form}>
-                    <Input
-                        id='title'
-                        label='Tytuł'
-                        errorText='Niepoprawny tytuł'
-                        //muszę zrezygnować z bind ponieważ w takim przypadku w momencie wypełniania formularza tworzy się
-                        //zbut wiele callbacków - praktycznie nieskoczona pętla i nie da się przejśc z jednego inputa
-                        //na drugi, dlatego zamiast tego dodaję prop id i przekazuję go w Input do funkcji w useeffect
-                        onInputChange={handleInputChange}
-                        returnKeyType='next'
-                        keyboardType='default'
-                        autoCorrect
-                        autoCapitalize='sentences'
-                        //jeśli edytuję produkt to do inputa wstawiam initialValue odpowiadającą tytułowi a jeśli tworzę
-                        //nowy to wtedy pole ma byc puste, podobnie z walidacją - patrz form state
-                        initialValue={editedProduct ? editedProduct.title : ''}
-                        initiallyValid={!!editedProduct}
-                        required
-                    />
-                    <Input
-                        id='image'
-                        label='Zdjęcie'
-                        errorText='Nie dodałeś zdjęcia'
-                        onInputChange={handleInputChange}
-                        returnKeyType='next'
-                        autoCapitalize='sentences'
-                        initialValue={editedProduct ? editedProduct.imageUrl : ''}
-                        initiallyValid={!!editedProduct}
-                        required
-                    />
-                    <Input
-                        id='price'
-                        label='Cena'
-                        errorText='Nie podałeś ceny'
-                        onInputChange={handleInputChange}
-                        returnKeyType='next'
-                        keyboardType='decimal-pad'
-                        initialValue={editedProduct ? editedProduct.price.toString() : ''}
-                        initiallyValid={!!editedProduct}
-                        required
-                        min={0.01}
-                    />
-                    <Input
-                        id='description'
-                        label='Opis'
-                        errorText='Nie możesz dodać produktu bez opisu'
-                        onInputChange={handleInputChange}
-                        keyboardType='default'
-                        autoCorrect
-                        autoCapitalize='sentences'
-                        multiline
-                        numberOfLines={5}
-                        initialValue={editedProduct ? editedProduct.description : ''}
-                        initiallyValid={!!editedProduct}
-                        required
-                        minLength={5}
-                    />
-                </View>
-            </ScrollView>
+        <ScrollView>
+            <View style={styles.form}>
+                <Input
+                    id='title'
+                    label='Tytuł'
+                    errorText='Niepoprawny tytuł'
+                    //muszę zrezygnować z bind ponieważ w takim przypadku w momencie wypełniania formularza tworzy się
+                    //zbut wiele callbacków - praktycznie nieskoczona pętla i nie da się przejśc z jednego inputa
+                    //na drugi, dlatego zamiast tego dodaję prop id i przekazuję go w Input do funkcji w useeffect
+                    onInputChange={handleInputChange}
+                    returnKeyType='next'
+                    keyboardType='default'
+                    autoCorrect
+                    autoCapitalize='sentences'
+                    //jeśli edytuję produkt to do inputa wstawiam initialValue odpowiadającą tytułowi a jeśli tworzę
+                    //nowy to wtedy pole ma byc puste, podobnie z walidacją - patrz form state
+                    initialValue={editedProduct ? editedProduct.title : ''}
+                    initiallyValid={!!editedProduct}
+                    required
+                />
+                <Input
+                    id='image'
+                    label='Zdjęcie'
+                    errorText='Nie dodałeś zdjęcia'
+                    onInputChange={handleInputChange}
+                    returnKeyType='next'
+                    autoCapitalize='sentences'
+                    initialValue={editedProduct ? editedProduct.imageUrl : ''}
+                    initiallyValid={!!editedProduct}
+                    required
+                />
+                <Input
+                    id='price'
+                    label='Cena'
+                    errorText='Nie podałeś ceny'
+                    onInputChange={handleInputChange}
+                    returnKeyType='next'
+                    keyboardType='decimal-pad'
+                    initialValue={editedProduct ? editedProduct.price.toString() : ''}
+                    initiallyValid={!!editedProduct}
+                    required
+                    min={0.01}
+                />
+                <Input
+                    id='description'
+                    label='Opis'
+                    errorText='Nie możesz dodać produktu bez opisu'
+                    onInputChange={handleInputChange}
+                    keyboardType='default'
+                    autoCorrect
+                    autoCapitalize='sentences'
+                    multiline
+                    numberOfLines={5}
+                    initialValue={editedProduct ? editedProduct.description : ''}
+                    initiallyValid={!!editedProduct}
+                    required
+                    minLength={5}
+                />
+            </View>
+        </ScrollView>
         // </KeyboardAvoidingView>
     )
 }
@@ -192,6 +221,11 @@ const EditProductScreen = props => {
 const styles = StyleSheet.create({
     form: {
         margin: 20,
+    },
+    centered: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 })
 
