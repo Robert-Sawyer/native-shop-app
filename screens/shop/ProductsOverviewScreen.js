@@ -29,6 +29,20 @@ const ProductsOverviewScreen = props => {
         setIsLoading(false)
     }, [dispatch, setIsLoading, setError])
 
+    //muszę dodać dodatkowy useEffect, ponieważ gdy używam drawer navigation i przełączam zakłądki, wtedy strony nie są
+    //ładowane od nowa tylko pobierane z pamięci, dlatego, jeśli ktoś miałby coś edytowac na serwerze to wtedy nie
+    //widać by było zmian w apce, bo react navigation nie pobrałby danych tylko odtworzył ekran z pamięci
+    //dlatego tutaj ustawiam listenera który obserwuje czy zaszła zmiana i ponownie łąduje produkty po przełączeniu
+    //stron, na koniec robię returna który w useeffect jest wykorzystywanydo czyszczenia komponentu przed odmonotowaniem
+    //w tym przypadku zwracam usunięcie listenera, który zostanie ponownie stworzony przy wyrenderowaniu komponentu.
+    useEffect(() => {
+        const willFocusSub = props.navigation.addListener('willFocus', loadProducts)
+
+        return () => {
+            willFocusSub.remove()
+        }
+    }, [loadProducts])
+
     useEffect(() => {
         loadProducts()
     }, [dispatch, loadProducts])
