@@ -10,7 +10,11 @@ import Colors from '../../constants/Colors'
 
 const ProductsOverviewScreen = props => {
 
+    //wstawiam osobnny stan dla odświeżania, nie tylko ładowania danych - jeśli user pociągnie liste produktów w dół
+    //wtedy uruchomi się odświeżenie listy. is loading działa 'nad' loadproducts, a refreshing wewnątrz tej funkcji -
+    //patrz useeffect
     const [isLoading, setIsLoading] = useState(false)
+    const [isRefreshing, setIsRefreshing] = useState(false)
     const [error, setError] = useState()
     const availableProducts = useSelector(state => state.products.availableProducts)
     const dispatch = useDispatch()
@@ -19,14 +23,14 @@ const ProductsOverviewScreen = props => {
     //to obejść tak jak poniżej, wykonując asynchroniczną funkcję w środku
     const loadProducts = useCallback(async () => {
         setError(null)
-        setIsLoading(true)
+        setIsRefreshing(true)
         try {
             await dispatch(productActions.fetchProducts())
         } catch (err) {
             setError(err.message)
         }
 
-        setIsLoading(false)
+        setIsRefreshing(false)
     }, [dispatch, setIsLoading, setError])
 
     //muszę dodać dodatkowy useEffect, ponieważ gdy używam drawer navigation i przełączam zakłądki, wtedy strony nie są
@@ -44,7 +48,10 @@ const ProductsOverviewScreen = props => {
     }, [loadProducts])
 
     useEffect(() => {
-        loadProducts()
+        setIsLoading(true)
+        loadProducts().then(() => {
+            setIsLoading(false)
+        })
     }, [dispatch, loadProducts])
 
     const renderProductItem = itemData => {
@@ -67,12 +74,12 @@ const ProductsOverviewScreen = props => {
     }
 
     if (error) {
-    return (
-        <View style={styles.centered}>
-            <Text>Coś poszło nie tak!</Text>
-            <Button title='Spróbuj ponownie' onPress={loadProducts} color={Colors.headerColor}/>
-        </View>
-    )
+        return (
+            <View style={styles.centered}>
+                <Text>Coś poszło nie tak!</Text>
+                <Button title='Spróbuj ponownie' onPress={loadProducts} color={Colors.headerColor}/>
+            </View>
+        )
     }
 
     if (isLoading) {
@@ -93,6 +100,8 @@ const ProductsOverviewScreen = props => {
 
     return (
         <FlatList
+            onRefresh={loadProducts}
+            refreshing={isRefreshing}
             data={availableProducts}
             keyExtractor={item => item.id}
             renderItem={renderProductItem}
