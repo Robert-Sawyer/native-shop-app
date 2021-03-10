@@ -8,7 +8,7 @@ import Colors from '../../constants/Colors'
 import * as productActions from '../../store/actions/products'
 
 const UserProductsScreen = props => {
-
+//TODO zaimplementować spinner w momencie ładowania produktów - usestate, loadproducts, activityinticator
     const userProducts = useSelector(state => state.products.userProducts)
 
     const dispatch = useDispatch()
