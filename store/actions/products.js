@@ -82,10 +82,11 @@ export const fetchProducts = () => {
                     ))
             }
 
+            console.log(getState())
             dispatch({
                 type: SET_PRODUCTS,
                 products: loadedProducts,
-                userProducts: loadedProducts.filter(prod => prod.userId === userId)
+                userProducts: loadedProducts.filter(prod => prod.ownerId === userId)
             })
         } catch (e) {
             throw e

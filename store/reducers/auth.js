@@ -7,12 +7,12 @@ const initialState = {
 
 const authReducer = (state = initialState, action) => {
     switch (action.type) {
-        case SIGNUP:
+        case LOGIN:
             return {
                 token: action.token,
                 userId: action.userId
             }
-        case LOGIN:
+        case SIGNUP:
             return {
                 token: action.token,
                 userId: action.userId
