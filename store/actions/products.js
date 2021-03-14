@@ -6,7 +6,9 @@ export const UPDATE_PRODUCT = 'UPDATE_PRODUCT'
 export const SET_PRODUCTS = 'SET_PRODUCTS'
 
 export const createProduct = (title, imageUrl, price, description) => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
+        const token = getState().auth.token
+        const userId = getState().auth.userId
         //redux thunk pozwala na zwrócenie funkcji przez kreator akcji i podstawienie jej w miejsce pierwszego
         //argumentu funkcji dispatch w komponencie który tę akcje dispatchuje
         //mogę teraz zamieścic w tym miejscu dowolny kod asynchroniczny np żadanie HTTP np zapytanie do API
@@ -18,14 +20,20 @@ export const createProduct = (title, imageUrl, price, description) => {
         //funkcja zwracana przez createProduct jest asynchroniczna i program ma zaczekać na odpowiedź, która przychodzi
         // z serwera po wysłaniu zapytania fetch i zapisać ją w stałej response.
         //Trzeba też pamiętać, że funkcja async await zwraca Promise więc cała funkcja createProduct też zwraca promise
-        const response = await fetch('https://native-shop-app-d7b20-default-rtdb.firebaseio.com/products.json', {
+        const response = await fetch(`https://native-shop-app-d7b20-default-rtdb.firebaseio.com/products.json?auth=${token}`, {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'
             },
             //obiektem wysyłanym do bazy będzie obiekt json, ametoda stringify przekształca tablicę, lub obiekt JS
             //właśnie w obiekt JSON. Produkt jest obiektem JS więc potrzeba przekształcić go w jsona
-            body: JSON.stringify({title, imageUrl, price, description})
+            body: JSON.stringify({
+                title,
+                imageUrl,
+                price,
+                description,
+                ownerId: userId
+            })
         })
 
         //zapisuję sobie dane zwrócone przez firebase bo wysłaniu zapytania. Jest top też zadanie asynchroniczne więc
@@ -40,7 +48,8 @@ export const createProduct = (title, imageUrl, price, description) => {
                 title,
                 imageUrl,
                 price,
-                description
+                description,
+                ownerId: userId
             }
         })
     }
@@ -48,11 +57,11 @@ export const createProduct = (title, imageUrl, price, description) => {
 
 export const fetchProducts = () => {
     return async (dispatch, getState) => {
-        const token = getState().auth.token
+        const userId = getState().auth.userId
         try {
             //pobieram produkty domyślną metoda get bez headersów i body więc nie potrzebuję configa
             const response = await fetch(
-                `https://native-shop-app-d7b20-default-rtdb.firebaseio.com/products.json?auth=${token}`)
+                `https://native-shop-app-d7b20-default-rtdb.firebaseio.com/products.json`)
 
             if (!response.ok) {
                 throw new Error('Coś poszło nie tak!')
@@ -65,7 +74,7 @@ export const fetchProducts = () => {
                 loadedProducts.push(
                     new Product(
                         key,
-                        'u1',
+                        resData[key].ownerId,
                         resData[key].title,
                         resData[key].imageUrl,
                         resData[key].description,
@@ -73,7 +82,11 @@ export const fetchProducts = () => {
                     ))
             }
 
-            dispatch({type: SET_PRODUCTS, products: loadedProducts})
+            dispatch({
+                type: SET_PRODUCTS,
+                products: loadedProducts,
+                userProducts: loadedProducts.filter(prod => prod.userId === userId)
+            })
         } catch (e) {
             throw e
         }
@@ -88,12 +101,12 @@ export const updateProduct = (id, title, imageUrl, price, description) => {
         const token = getState().auth.token
         const response = await fetch(
             `https://native-shop-app-d7b20-default-rtdb.firebaseio.com/products/${id}.json?auth=${token}`, {
-            method: 'patch',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({title, imageUrl, price, description})
-        })
+                method: 'patch',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({title, imageUrl, price, description})
+            })
         if (!response.ok) {
             throw new Error('Coś poszło nie tak!')
         }
@@ -115,8 +128,8 @@ export const deleteProduct = productId => {
         const token = getState().auth.token
         const response = await fetch(
             `https://native-shop-app-d7b20-default-rtdb.firebaseio.com/products/${productId}.json?auth=${token}`, {
-            method: 'delete',
-        })
+                method: 'delete',
+            })
         if (!response.ok) {
             throw new Error('Coś poszło nie tak!')
         }

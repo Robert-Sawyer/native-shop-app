@@ -21,7 +21,7 @@ const ProductDetailsScreen = props => {
                     dispatch(cartActions.addToCart(selectedProduct))
                 }}/>
             </View>
-            <Text style={styles.price}>{selectedProduct.price}</Text>
+            <Text style={styles.price}>{selectedProduct.price} zł</Text>
             <Text style={styles.desc}>{selectedProduct.description}</Text>
         </ScrollView>
     )
