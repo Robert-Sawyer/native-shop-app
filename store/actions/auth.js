@@ -24,14 +24,14 @@ export const signup = (email, password) => {
             let message = 'Coś poszło nie tak!'
             if (errorId === 'EMAIL_EXISTS') {
                 message = 'Istnieje już użytkownik o takim adresie e-mail'
-            } 
+            }
             throw new Error(message)
         }
 
         const resData = await response.json()
 
         console.log(resData)
-        dispatch({type: SIGNUP})
+        dispatch({type: SIGNUP, token: resData.idToken, userId: resData.localId})
     }
 }
 
@@ -69,6 +69,6 @@ export const login = (email, password) => {
         const resData = await response.json()
 
         console.log(resData)
-        dispatch({type: LOGIN})
+        dispatch({type: LOGIN, token: resData.idToken, userId: resData.localId})
     }
 }

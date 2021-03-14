@@ -4,9 +4,10 @@ export const ADD_ORDER = 'ADD_ORDER'
 export const SET_ORDERS = 'SET_ORDERS'
 
 export const addOrder = (cartItems, totalAmount) => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
+        const token = getState().auth.token
         const date = new Date()
-        const response = await fetch(`https://native-shop-app-d7b20-default-rtdb.firebaseio.com/orders/u1.json`, {
+        const response = await fetch(`https://native-shop-app-d7b20-default-rtdb.firebaseio.com/orders/u1.json?auth${token}`, {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json'

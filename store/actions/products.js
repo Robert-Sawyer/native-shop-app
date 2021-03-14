@@ -47,10 +47,12 @@ export const createProduct = (title, imageUrl, price, description) => {
 }
 
 export const fetchProducts = () => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
+        const token = getState().auth.token
         try {
             //pobieram produkty domyślną metoda get bez headersów i body więc nie potrzebuję configa
-            const response = await fetch('https://native-shop-app-d7b20-default-rtdb.firebaseio.com/products.json')
+            const response = await fetch(
+                `https://native-shop-app-d7b20-default-rtdb.firebaseio.com/products.json?auth=${token}`)
 
             if (!response.ok) {
                 throw new Error('Coś poszło nie tak!')
@@ -79,8 +81,13 @@ export const fetchProducts = () => {
 }
 
 export const updateProduct = (id, title, imageUrl, price, description) => {
-    return async dispatch => {
-        const response = await fetch(`https://native-shop-app-d7b20-default-rtdb.firebaseio.com/products/${id}.json`, {
+    //redux thnk daje możliwość przyjęcia drugiego argumentu i ppbrania stanu z reduxa a tutaj potrzebuję tego, żeby
+    //uzyskac token autoryzacyjny zalogowanego usera żeby móc edytowac produkty
+    return async (dispatch, getState) => {
+        console.log(getState())
+        const token = getState().auth.token
+        const response = await fetch(
+            `https://native-shop-app-d7b20-default-rtdb.firebaseio.com/products/${id}.json?auth=${token}`, {
             method: 'patch',
             headers: {
                 'Content-Type': 'application/json'
@@ -104,8 +111,10 @@ export const updateProduct = (id, title, imageUrl, price, description) => {
 }
 
 export const deleteProduct = productId => {
-    return async dispatch => {
-        const response = await fetch(`https://native-shop-app-d7b20-default-rtdb.firebaseio.com/products/${productId}.json`, {
+    return async (dispatch, getState) => {
+        const token = getState().auth.token
+        const response = await fetch(
+            `https://native-shop-app-d7b20-default-rtdb.firebaseio.com/products/${productId}.json?auth=${token}`, {
             method: 'delete',
         })
         if (!response.ok) {
