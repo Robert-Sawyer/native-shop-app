@@ -25,8 +25,13 @@ const StartUpScreen = props => {
                 props.navigation.navigate('Auth')
                 return;
             }
+
+            // obliczam ile czasu zostało do wygaśnięcia tokenu - biorę datę z przyszłości (expdate) i
+            //odejmuję obecny czas
+            const expTime = expirationDate.getTime() - new Date().getTime()
+
             props.navigation.navigate('Shop')
-            dispatch(authActions.authenticate(token, userId))
+            dispatch(authActions.authenticate(token, userId, expTime))
         }
 
         tryLogin()
