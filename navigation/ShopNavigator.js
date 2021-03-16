@@ -1,8 +1,9 @@
 import React from 'react'
-import {Platform} from "react-native";
+import {Platform, Button, View, SafeAreaView} from "react-native";
+import {useDispatch} from "react-redux";
 import {createAppContainer, createSwitchNavigator} from 'react-navigation'
 import {createStackNavigator} from "react-navigation-stack";
-import {createDrawerNavigator} from "react-navigation-drawer";
+import {createDrawerNavigator, DrawerItems} from "react-navigation-drawer";
 import ProductsOverviewScreen from "../screens/shop/ProductsOverviewScreen";
 import ProductDetailsScreen from "../screens/shop/ProductDetailsScreen";
 import CartScreen from "../screens/shop/CartScreen";
@@ -13,6 +14,7 @@ import UserProductsScreen from "../screens/user/UserProductsScreen";
 import EditProductScreen from "../screens/user/EditProductScreen";
 import AuthScreen from "../screens/user/AuthScreen";
 import StartUpScreen from "../screens/StartUpScreen";
+import * as authActions from '../store/actions/auth'
 
 const defaultNavOption = {
     headerStyle: {
@@ -96,7 +98,26 @@ const ShopNavigator = createDrawerNavigator({
 }, {
     contentOptions: {
         activeTintColor: Colors.headerColor
+    },
+    //dodaję teraz nowy komponent w szufladzie, dlatego dopisuję props
+    contentComponent: props => {
+        //mogę użyć dispatcha, ponieważ dodaję do navigatora po prostu kolejny komponent i mogę robić to samo
+        const dispatch = useDispatch()
+        return (
+            //ten komponent musi mieć forceinset żeby ustawić jego początkowe położenie, DrawerItems musi
+            //kopiowac pierwotne propsy, których wymaga, bo potrzebuje ich do działania
+            <View style={{flex: 1, paddingTop: 30}}>
+                <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
+                    <DrawerItems {...props}/>
+                    <Button title='Wyloguj' color={Colors.headerColor} onPress={() => {
+                        dispatch(authActions.logout())
+                        props.navigation.navigate('Auth')
+                    }}/>
+                </SafeAreaView>
+            </View>
+        )
     }
+
 })
 
 const AuthNavigator = createStackNavigator({
