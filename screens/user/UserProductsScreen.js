@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     },
 })
 
-UserProductsScreen.navigationOptions = navData => {
+export const userProductsOptions = navData => {
     return {
         headerTitle: 'Moje produkty',
         headerLeft: () =>

@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     },
 })
 
-EditProductScreen.navigationOptions = navData => {
+export const editProductsOptions = navData => {
     const submit = navData.navigation.getParam('submit')
     return {
         headerTitle: navData.navigation.getParam('productId') ? 'Edycja produktu' : 'Dodaj produkt',
