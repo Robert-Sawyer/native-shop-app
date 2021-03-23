@@ -27,7 +27,7 @@ const ProductDetailsScreen = props => {
     )
 }
 
-ProductDetailsScreen.navigationOptions = navData => {
+export const productDetailsOptions = navData => {
     return {
         headerTitle: navData.navigation.getParam('productTitle'),
         headerRight: () =>

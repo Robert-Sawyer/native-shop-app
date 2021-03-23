@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     },
 })
 
-CartScreen.navigationOptions = {
+export const cartOptions = {
     headerTitle: 'Koszyk',
 }
 
