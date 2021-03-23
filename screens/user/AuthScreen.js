@@ -61,7 +61,7 @@ const AuthScreen = props => {
         setIsLoading(true)
         try {
             await dispatch(action)
-            props.navigation.navigate('Shop')
+            // props.navigation.navigate('Shop')
         } catch (e) {
             setError(e.message)
         }
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     },
 })
 
-AuthScreen.navigationOptions = {
+export const authOptions = {
     headerTitle: 'Autoryzacja',
 }
 

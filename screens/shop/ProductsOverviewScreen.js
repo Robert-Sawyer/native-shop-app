@@ -40,10 +40,10 @@ const ProductsOverviewScreen = props => {
     //stron, na koniec robię returna który w useeffect jest wykorzystywanydo czyszczenia komponentu przed odmonotowaniem
     //w tym przypadku zwracam usunięcie listenera, który zostanie ponownie stworzony przy wyrenderowaniu komponentu.
     useEffect(() => {
-        const willFocusSub = props.navigation.addListener('willFocus', loadProducts)
+        const unsubscribe = props.navigation.addListener('focus', loadProducts)
 
         return () => {
-            willFocusSub.remove()
+            unsubscribe()
         }
     }, [loadProducts])
 

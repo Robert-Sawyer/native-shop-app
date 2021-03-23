@@ -1,19 +1,24 @@
 import React from 'react'
 import {useSelector} from "react-redux"
 import {NavigationContainer} from "@react-navigation/native"
-import {AdminNavigator, OrdersNavigator, ProductsNavigator} from "./ShopNavigator";
+import {ShopNavigator, AuthNavigator} from "./ShopNavigator";
+import StartUpScreen from "../screens/StartUpScreen";
 
 const AppNavigator = props => {
 
     //podwójny wykrzyknik oznacza, że jeśli tokenu nie ma to będzie false a jesli jest to bedzie true
     const isAuth = useSelector(state => !!state.auth.token)
+    const didTryAutologin =  useSelector(state => state.auth.didTryAutoLogin)
 
-
+//w wersji 5 nie ma już switcha więc dodałem zmiany w reduxie auth i w startupScreen i będe renderował TYLKO jeden
+    //z komponentów zawartych w Navigationcontainer w zaleznosci od okoliczności i potrzeby
+    //jeśli jest auth to pokaż sklep, jeśli nie jest i próbował się logować to pokaż authNavigator, jeśli nie próbował
+    //to wyrenderuj StartupScreen
     return (
         <NavigationContainer>
-            <ProductsNavigator/>
-            <OrdersNavigator/>
-            <AdminNavigator/>
+            {isAuth && <ShopNavigator/>}
+            {!isAuth && didTryAutologin && <AuthNavigator/>}
+            {!isAuth && !didTryAutologin && <StartUpScreen/>}
         </NavigationContainer>
     )
 }

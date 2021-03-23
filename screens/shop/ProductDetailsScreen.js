@@ -8,7 +8,7 @@ import CustomHeaderButton from "../../components/UI/HeaderButton";
 
 const ProductDetailsScreen = props => {
 
-    const productId = props.navigation.getParam('productId')
+    const productId = props.route.params ? props.route.params.productId : null
     const selectedProduct = useSelector(state =>
         state.products.availableProducts.find(prod => prod.id === productId))
 
@@ -29,7 +29,7 @@ const ProductDetailsScreen = props => {
 
 export const productDetailsOptions = navData => {
     return {
-        headerTitle: navData.navigation.getParam('productTitle'),
+        headerTitle: navData.route.params ? navData.route.params.productTitle : null,
         headerRight: () =>
             <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
                 <Item

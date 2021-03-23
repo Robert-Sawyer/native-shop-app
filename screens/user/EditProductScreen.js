@@ -43,7 +43,10 @@ const EditProductScreen = props => {
     const [error, setError] = useState()
 
     //pobieram produkty i filtruję je na podstawie parametru
-    const prodId = props.navigation.getParam('productId')
+    //w r nav 5 nie ma już funkcji getParam. zamaist tego używam route.params.nazwaParametru
+    //czasami rodzice komponentu sa niezdefiniowani więc i parametry będa niezdefiniowane, więc musze się upewnić
+    //że próbuję się dostać do konkretnego obiektu/parametru
+    const prodId = props.route.params ? props.route.params.productId : null
     const editedProduct = useSelector(state =>
         state.products.userProducts.find(prod => prod.id === prodId))
 
@@ -119,8 +122,19 @@ const EditProductScreen = props => {
     }, [dispatch, prodId, formState])
 
     //tworzę parametr, który odbiorę poza komponentem, w navigationOptions żeby zapisać edytowane zmiany w produkcie
+    //od r nav 5 nie muszę już ustawiac parametrów tylko skorzystać z funkcji setOptions by dynamicznie
+    //konfigurowac mojego navigatora z wnętrza komponentu, czyli ustawic headerRight tutaj a nie na dole, w navOptions
     useEffect(() => {
-        props.navigation.setParams({submit: handleSubmit})
+        props.navigation.setOptions({
+            headerRight: () =>
+                <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+                    <Item
+                        title='Save'
+                        iconName={Platform.OS === 'android' ? 'md-checkmark' : 'ios-checkmark'}
+                        onPress={handleSubmit}
+                    />
+                </HeaderButtons>,
+        })
     }, [handleSubmit])
 
     //inputId będzie po prostu string z nazwą inputa - powinny być takie jak pola w usereducer
@@ -230,17 +244,10 @@ const styles = StyleSheet.create({
 })
 
 export const editProductsOptions = navData => {
-    const submit = navData.navigation.getParam('submit')
+    const routeParams = navData.route.params ? navData.route.params : {}
     return {
-        headerTitle: navData.navigation.getParam('productId') ? 'Edycja produktu' : 'Dodaj produkt',
-        headerRight: () =>
-            <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-                <Item
-                    title='Save'
-                    iconName={Platform.OS === 'android' ? 'md-checkmark' : 'ios-checkmark'}
-                    onPress={submit}
-                />
-            </HeaderButtons>,
+        //jeśli parametry beda niezdefiniowane, to wtedy wejdzie w tryb dodawania
+        headerTitle: routeParams.productId ? 'Edycja produktu' : 'Dodaj produkt',
     }
 }
 
