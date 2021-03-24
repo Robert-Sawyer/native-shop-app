@@ -4,7 +4,7 @@ import {NavigationContainer} from "@react-navigation/native"
 import {ShopNavigator, AuthNavigator} from "./ShopNavigator";
 import StartUpScreen from "../screens/StartUpScreen";
 
-const AppNavigator = props => {
+const AppNavigator = () => {
 
     //podwójny wykrzyknik oznacza, że jeśli tokenu nie ma to będzie false a jesli jest to bedzie true
     const isAuth = useSelector(state => !!state.auth.token)

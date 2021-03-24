@@ -7,7 +7,7 @@ import OrderItem from "../../components/OrderItem";
 import * as ordersActions from '../../store/actions/orders'
 import Colors from "../../constants/Colors";
 
-const OrdersScreen = props => {
+const OrdersScreen = () => {
 
     const [isLoading, setIsLoading] = useState(false)
 

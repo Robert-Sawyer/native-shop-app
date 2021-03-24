@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useCallback, useReducer} from 'react'
-import {ScrollView, View, StyleSheet, Platform, Alert, KeyboardAvoidingView, ActivityIndicator} from 'react-native'
+import {ScrollView, View, StyleSheet, Platform, Alert, ActivityIndicator} from 'react-native'
 import {HeaderButtons, Item} from "react-navigation-header-buttons";
 import CustomHeaderButton from "../../components/UI/HeaderButton";
 import Input from '../../components/UI/Input'

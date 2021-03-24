@@ -12,7 +12,6 @@ import {Ionicons} from "@expo/vector-icons";
 import UserProductsScreen, {userProductsOptions} from "../screens/user/UserProductsScreen";
 import EditProductScreen, {editProductsOptions} from "../screens/user/EditProductScreen";
 import AuthScreen, {authOptions} from "../screens/user/AuthScreen";
-import StartUpScreen from "../screens/StartUpScreen";
 import * as authActions from '../store/actions/auth'
 
 const defaultNavOption = {

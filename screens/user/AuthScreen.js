@@ -31,7 +31,7 @@ const formReducer = (state, action) => {
     return state
 }
 
-const AuthScreen = props => {
+const AuthScreen = () => {
 
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState()
