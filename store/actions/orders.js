@@ -24,6 +24,29 @@ export const addOrder = (cartItems, totalAmount) => {
             type: ADD_ORDER,
             orderData: {id: resData.name, items: cartItems, amount: totalAmount, date: date}
         })
+
+        //przechodze tutaj po elementach w koszyku i pobieram pushtoken z KAŻDEGO produktu z koszyka, tak, żeby KAŻDY
+        //WŁAŚCICIEL PRODUCTU OTRZYMAŁ SWOJE POWIADOMIENIE
+        for (const cartItem of cartItems) {
+            const pushToken = cartItem.productPushToken
+
+            console.log(cartItem)
+
+            fetch('https://exp.host/--/api/v2/push/send', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Accept-Encoding': 'gzip, deflate',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    to: pushToken,
+                    title: 'Złożono zamówienie',
+                    body: cartItem.productTitle
+                })
+
+            })
+        }
     }
 }
 

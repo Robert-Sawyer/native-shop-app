@@ -14,6 +14,7 @@ const cartReducer = (state = initialState, action) => {
             const addedProduct = action.product
             const productPrice = addedProduct.price
             const productTitle = addedProduct.title
+            const pushToken = addedProduct.pushToken
 
             let newOrUpdatedCartItem
 
@@ -23,10 +24,11 @@ const cartReducer = (state = initialState, action) => {
                     state.items[addedProduct.id].quantity + 1,
                     productTitle,
                     productPrice,
-                    state.items[addedProduct.id].sum + productPrice
+                    state.items[addedProduct.id].sum + productPrice,
+                    pushToken
                 )
             } else {
-                newOrUpdatedCartItem = new CartItem(1, productTitle, productPrice, productPrice)
+                newOrUpdatedCartItem = new CartItem(1, productTitle, productPrice, productPrice, pushToken)
             }
             return {
                 //nie muszę kopiować starego stanu w przypadku takim jak ten - gdy w każdym przypadku zmieniam

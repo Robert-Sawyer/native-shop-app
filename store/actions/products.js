@@ -65,7 +65,8 @@ export const createProduct = (title, imageUrl, price, description) => {
                 imageUrl,
                 price,
                 description,
-                ownerId: userId
+                ownerId: userId,
+                pushToken: pushToken
             }
         })
     }
@@ -91,6 +92,7 @@ export const fetchProducts = () => {
                     new Product(
                         key,
                         resData[key].ownerId,
+                        resData[key].ownerPushToken,
                         resData[key].title,
                         resData[key].imageUrl,
                         resData[key].description,

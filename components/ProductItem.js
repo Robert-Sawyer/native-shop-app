@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 import DefaultText from "./DefaultText";
 
-const ProductItem = props => {
+const ProductItem = ({onSelect, imgHeight, image, detailsHeight, title, price, actionHeight, children}) => {
 
     let TouchableComp = TouchableOpacity
 
@@ -20,19 +20,19 @@ const ProductItem = props => {
 
     return (
         <View style={styles.prodItem}>
-            <TouchableComp onPress={props.onSelect}>
+            <TouchableComp onPress={onSelect}>
                 <View style={styles.insideContainer}>
-                    <View style={{...styles.imgContainer, ...{height: props.imgHeight}}}>
-                        <Image style={styles.image} source={{uri: props.image}}/>
+                    <View style={{...styles.imgContainer, ...{height: imgHeight}}}>
+                        <Image style={styles.image} source={{uri: image}}/>
                     </View>
-                    <View style={{...styles.details, ...{height: props.detailsHeight}}}>
-                        <Text numberOfLines={1} style={styles.title}>{props.title}</Text>
+                    <View style={{...styles.details, ...{height: detailsHeight}}}>
+                        <Text numberOfLines={1} style={styles.title}>{title}</Text>
                         <View style={styles.priceContainer}>
-                            <DefaultText>{props.price.toFixed(2)} zł</DefaultText>
+                            <DefaultText>{price.toFixed(2)} zł</DefaultText>
                         </View>
                     </View>
-                    <View style={{...styles.action, ...{height: props.actionHeight}}}>
-                        {props.children}
+                    <View style={{...styles.action, ...{height: actionHeight}}}>
+                        {children}
                     </View>
                 </View>
             </TouchableComp>
