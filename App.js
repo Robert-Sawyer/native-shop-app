@@ -5,7 +5,6 @@ import ReduxThunk from 'redux-thunk'
 import * as Font from 'expo-font'
 import AppLoading from "expo-app-loading";
 import productsReducer from "./store/reducers/products";
-import ShopNavigator from "./navigation/ShopNavigator";
 import cartReducer from "./store/reducers/cart";
 import ordersReducer from "./store/reducers/orders";
 import authReducer from "./store/reducers/auth";

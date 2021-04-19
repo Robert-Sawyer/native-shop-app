@@ -1,4 +1,6 @@
 import Product from "../../models/product";
+import * as Notifications from 'expo-notifications'
+import * as Permissions from 'expo-permissions'
 
 export const DELETE_PRODUCT = 'DELETE_PRODUCT'
 export const CREATE_PRODUCT = 'CREATE_PRODUCT'
@@ -7,6 +9,19 @@ export const SET_PRODUCTS = 'SET_PRODUCTS'
 
 export const createProduct = (title, imageUrl, price, description) => {
     return async (dispatch, getState) => {
+        //w momencie tworzenia produktu przez usera zapisyawny jest token jego urządzenia, żeby ten user dostał
+        //powiadomienie gdy coś się stanie z jego produktem - zostanie dodany do ulubionych albo kupionych przez
+        //innego usera
+        let pushToken
+        let statusObj = await Permissions.getAsync(Permissions.NOTIFICATIONS)
+        if (statusObj.status !== 'granted') {
+            statusObj = await Permissions.askAsync(Permissions.NOTIFICATIONS)
+        }
+        if (statusObj.status !== 'granted') {
+            pushToken = null
+        } else {
+            pushToken = (await Notifications.getExpoPushTokenAsync()).data
+        }
         const token = getState().auth.token
         const userId = getState().auth.userId
         //redux thunk pozwala na zwrócenie funkcji przez kreator akcji i podstawienie jej w miejsce pierwszego
@@ -32,7 +47,8 @@ export const createProduct = (title, imageUrl, price, description) => {
                 imageUrl,
                 price,
                 description,
-                ownerId: userId
+                ownerId: userId,
+                ownerPushToken: pushToken
             })
         })
 
